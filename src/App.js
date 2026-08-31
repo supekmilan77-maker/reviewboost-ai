@@ -6,6 +6,7 @@ function App() {
   const [businessName, setBusinessName] = useState('Naša Prevádzka');
   const [googleReviewUrl, setGoogleReviewUrl] = useState('https://www.google.com/maps');
   const [logoUrl, setLogoUrl] = useState('');
+  const [placeId, setPlaceId] = useState('');
   const [rating, setRating] = useState(5);
   const [selectedTags, setSelectedTags] = useState([]);
   const [generatedReview, setGeneratedReview] = useState('');
@@ -28,10 +29,16 @@ function App() {
     const urlName = params.get('name');
     const urlGoogle = params.get('google');
     const urlLogo = params.get('logo');
+    const urlPlaceId = params.get('placeid');
 
     if (urlName) setBusinessName(decodeURIComponent(urlName));
     if (urlGoogle) setGoogleReviewUrl(decodeURIComponent(urlGoogle));
     if (urlLogo) setLogoUrl(decodeURIComponent(urlLogo));
+    if (urlPlaceId) {
+      setPlaceId(decodeURIComponent(urlPlaceId));
+      // Ak je placeid zadaný, vytvor URL pre Google Reviews
+      setGoogleReviewUrl(`https://search.google.com/local/writereview?placeid=${decodeURIComponent(urlPlaceId)}`);
+    }
 
     // Detekuj dark mode preferencu
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -331,6 +338,11 @@ function App() {
                   : 'bg-white/80 border-gray-300 focus:border-purple-500 text-gray-900 placeholder-gray-400'
               } focus:outline-none font-semibold text-lg shadow-md`}
             />
+            {placeId && (
+              <p className={`text-xs mt-3 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                🔗 Place ID: <code className="font-mono">{placeId}</code>
+              </p>
+            )}
           </div>
 
           {/* Main Card */}
